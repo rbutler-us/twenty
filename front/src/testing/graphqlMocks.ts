@@ -7,6 +7,7 @@ import { CREATE_EVENT } from '@/analytics/graphql/queries/createEvent';
 import { GET_CLIENT_CONFIG } from '@/client-config/graphql/queries/getClientConfig';
 import { INSERT_ONE_COMPANY } from '@/companies/graphql/mutations/insertOneCompany';
 import { GET_COMPANIES } from '@/companies/graphql/queries/getCompanies';
+import { FIND_MANY_METADATA_OBJECTS } from '@/metadata/graphql/queries';
 import { INSERT_ONE_PERSON } from '@/people/graphql/mutations/insertOnePerson';
 import { UPDATE_ONE_PERSON } from '@/people/graphql/mutations/updateOnePerson';
 import { GET_PEOPLE } from '@/people/graphql/queries/getPeople';
@@ -42,6 +43,7 @@ import {
   mockedCompanyTableColumns,
   mockedCompanyTableViews,
 } from './mock-data/companies';
+import { mockedMetadataObjects } from './mock-data/metadata';
 import {
   mockedPeopleData,
   mockedPersonTableColumns,
@@ -55,6 +57,10 @@ import {
   filterAndSortData,
   updateOneFromData,
 } from './mock-data';
+
+const metadataGraphql = graphql.link(
+  `${process.env.REACT_APP_SERVER_BASE_URL}/metadata`,
+);
 
 export const graphqlMocks = [
   graphql.query(getOperationName(GET_COMPANIES) ?? '', (req, res, ctx) => {
@@ -329,6 +335,12 @@ export const graphqlMocks = [
           },
         }),
       );
+    },
+  ),
+  metadataGraphql.query(
+    getOperationName(FIND_MANY_METADATA_OBJECTS) ?? '',
+    (req, res, ctx) => {
+      return res(ctx.data({ objects: mockedMetadataObjects }));
     },
   ),
 ];
